@@ -86,7 +86,7 @@ public:
   UpdateListener(FW::FileWatcher *fileWatcher, std::set<std::string> *savefileDirs, std::pair<int, int> resolution={1920, 1080}) :
     fileWatcher(fileWatcher),  spellCheck("../data/dictionary.txt"), savefileDirs(savefileDirs),
     //screen(1706, 16, 116, 19)
-    screen(resolution.first - 214, 16, 116, 19)
+    screen(resolution.first - 234, 16, 134, 19)
   {
     ocr = new OCR();
   }
@@ -194,10 +194,15 @@ public:
       } else {
         //std::cout << "Failed to create \"" +currentSavefile + "\" folder in \"" << dir << "\"" << std::endl;
       }
-      std::ofstream  dst(dir + "/" + currentSavefile +"/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4",  std::ios::binary);
-      dst << src.rdbuf();
-      std::cout << "Created savefile: " << currentSavefile  +"/" + currentSavefile + "." + std::to_string(subversionInt) + "." + currentDate + ".eu4" <<std::endl;
-
+      if(savefileDirs->count(currentSavefile) != 0) {
+        std::ofstream  dst(dir + "/" + currentSavefile +"/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4",  std::ios::binary);
+        dst << src.rdbuf();
+        std::cout << "Created savefile: " << currentSavefile  +"/" + currentSavefile + "." + std::to_string(subversionInt) + "." + currentDate + ".eu4" <<std::endl;
+      } else {
+        std::ofstream  dst(dir + "/"  + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4",  std::ios::binary);
+        dst << src.rdbuf();
+      std::cout << "Created savefile: " <<  currentSavefile + "." + std::to_string(subversionInt) + "." + currentDate + ".eu4" <<std::endl;
+      }
       return true;
     }
     return false;
@@ -223,7 +228,10 @@ public:
     screen(image);
   }
 
+  //NOTE: Need to be configured
   void setResolution(std::pair<int, int> resolution) {
+    std::cout << "setResolution isn't configure, forcing close." << std::endl;
+    assert(false);
     screen.x = resolution.first - 850;
     screen.y = 16;
     screen.width = 116;
