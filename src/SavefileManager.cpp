@@ -88,9 +88,9 @@ inline bool FileExists (const std::string& name) {
 class UpdateListener : public FW::FileWatchListener {
 public:
   UpdateListener(FW::FileWatcher *fileWatcher, std::set<std::string> *savefileDirs, std::pair<int, int> resolution={1920, 1080}) :
-    fileWatcher(fileWatcher),  spellCheck("../data/dictionary.txt"), savefileDirs(savefileDirs),
-    //screen(1706, 16, 116, 19)
-    screen(resolution.first - 214, 16, 124, 19)
+      fileWatcher(fileWatcher),  spellCheck("../data/dictionary.txt"), savefileDirs(savefileDirs),
+      //screen(1706, 16, 116, 19)
+      screen(resolution.first - 214, 16, 124, 19)
   {
     ocr = new OCR();
   }
@@ -185,6 +185,10 @@ public:
 
       lastDateValue = dateValue;
 
+      // Check if current watcher is in subdirectory
+      if(!isSubdirectory && FileExists(dir+"/"+currentSavefile)) {
+        isSubdirectory = true;
+      }
       //std::string newDate = currentDate; 
       //findAndReplaceInString(newDate, " ", "_");
 
@@ -195,7 +199,7 @@ public:
         //std::cout << "Failed to create \"" +currentSavefile + "\" folder in \"" << dir << "\"" << std::endl;
       }
 
-      if(savefileDirs->count(currentSavefile) != 0) {
+      if(savefileDirs->count(currentSavefile) != 0 && !isSubdirectory) {
         for(int i{subversionInt};i<10;i++) {
           auto const filename = dir + "/" + currentSavefile +"/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4";
           if(FileExists(filename)) subversionInt++;
@@ -206,7 +210,7 @@ public:
         std::cout << "Created savefile: " << currentSavefile  +"/" + currentSavefile + "." + std::to_string(subversionInt) + "." + currentDate + ".eu4" <<std::endl;
       } else {
         for(int i{subversionInt};i<64;i++) {
-          auto const filename = dir + "/" + currentSavefile +"/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4";
+          auto const filename = dir + "/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4";
           if(FileExists(filename)) subversionInt++;
           else break;
         }
@@ -254,6 +258,7 @@ public:
   std::string currentDate;
   U8 lastDateValue = 0;
   int subversionInt = 0;
+  bool isSubdirectory = false;
 
   std::ofstream *ofs;
 private:
