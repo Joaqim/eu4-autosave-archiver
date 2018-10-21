@@ -79,6 +79,10 @@ int64 const CompareDate(std::string const sz1, std::string const sz2) {
   return DateToInt(sz1) - DateToInt(sz2);
 }
 
+inline bool FileExists (const std::string& name) {
+  struct stat buffer;
+  return (stat (name.c_str(), &buffer) == 0);
+}
 
 /// Processes a file action
 class UpdateListener : public FW::FileWatchListener {
@@ -86,7 +90,7 @@ public:
   UpdateListener(FW::FileWatcher *fileWatcher, std::set<std::string> *savefileDirs, std::pair<int, int> resolution={1920, 1080}) :
     fileWatcher(fileWatcher),  spellCheck("../data/dictionary.txt"), savefileDirs(savefileDirs),
     //screen(1706, 16, 116, 19)
-    screen(resolution.first - 234, 16, 134, 19)
+    screen(resolution.first - 214, 16, 124, 19)
   {
     ocr = new OCR();
   }
@@ -163,7 +167,7 @@ public:
       //assert(currentDate.size() > 0);
 
       U8 dateValue = DateToInt(currentDate.c_str()); // creates a value of Year + Month
-       
+
       if(dateValue < DateToInt("1444_11_11")) return false; // NOTE: Discards dates less than 1444 11 11
 
       std::cout <<"Date Value: "<< dateValue << std::endl;
@@ -184,21 +188,28 @@ public:
       //std::string newDate = currentDate; 
       //findAndReplaceInString(newDate, " ", "_");
 
-      if (savefileDirs->count(currentSavefile) == 0 && !impl::makePath(dir + "/" + currentSavefile)) {
+      if (savefileDirs->count(currentSavefile) == 0 && impl::makePath(dir + "/" + currentSavefile)) {
         savefileDirs->insert(currentSavefile);
-        //ofs->open("../data/savefile_dirs.txt");
-        *ofs << currentSavefile;
-        //ofs->write(currentSavefile.c_str(), currentSavefile.size()*sizeof(char));
-        //ofs->close();
         fileWatcher->addWatch(dir + "/" + currentSavefile, this);
       } else {
         //std::cout << "Failed to create \"" +currentSavefile + "\" folder in \"" << dir << "\"" << std::endl;
       }
+
       if(savefileDirs->count(currentSavefile) != 0) {
+        for(int i{subversionInt};i<10;i++) {
+          auto const filename = dir + "/" + currentSavefile +"/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4";
+          if(FileExists(filename)) subversionInt++;
+          else break;
+        }
         std::ofstream  dst(dir + "/" + currentSavefile +"/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4",  std::ios::binary);
         dst << src.rdbuf();
         std::cout << "Created savefile: " << currentSavefile  +"/" + currentSavefile + "." + std::to_string(subversionInt) + "." + currentDate + ".eu4" <<std::endl;
       } else {
+        for(int i{subversionInt};i<64;i++) {
+          auto const filename = dir + "/" + currentSavefile +"/" + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4";
+          if(FileExists(filename)) subversionInt++;
+          else break;
+        }
         std::ofstream  dst(dir + "/"  + currentSavefile + "." + std::to_string(subversionInt) +"." + currentDate + ".eu4",  std::ios::binary);
         dst << src.rdbuf();
       std::cout << "Created savefile: " <<  currentSavefile + "." + std::to_string(subversionInt) + "." + currentDate + ".eu4" <<std::endl;
@@ -252,7 +263,7 @@ private:
   cv::Mat image;
 
   FW::FileWatcher *fileWatcher;
-  std::set<std::string> *savefileDirs;
+  std::unique_ptr<std::set<std::string>> savefileDirs;
 };
 
 struct SavefileManager
@@ -310,25 +321,40 @@ struct SavefileManager
     ifs.close();
 
 
-    ofs.open("../data/savefile_dirs.txt", std::ios::app);
+    //    ofs.open("../data/savefile_dirs.txt", std::ios::app);
 
     //fileWatcher.addWatch(save_path, &updateListener);
 
      }
   void update() {
-    //ofs.open("../data/savefile_dirs.txt");
     fileWatcher.update();
-    //ofs.close();
+#if 0
+    std::ofstream ofs;
+    ofs.open("../data/savefile_dirs.txt");
+    assert(ofs);
+    for(auto &w : savefileDirs) {
+      ofs.write(w.c_str(), w.size()*sizeof(char));
+    }
+    //ofs.write(currentSavefile.c_str(), currentSavefile.size()*sizeof(char));
+    ofs.close();
+#endif
   }
 
   ~SavefileManager() {
-    //for(auto &w : savefileDirs) ofs << w;
+    ofs.open("../data/savefile_dirs.txt");
+    assert(ofs);
+    for(auto &w : savefileDirs) {
+      ofs.write(w.c_str(), w.size()*sizeof(char));
+      //      ofs << w;
+    }
+
     ofs.close();
   }
 
   FW::FileWatcher fileWatcher;
   UpdateListener *updateListener;
   std::set<std::string> savefileDirs;
+  std::set<std::string> savefileDates;
   std::ofstream ofs;
 
 };
