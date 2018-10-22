@@ -2,6 +2,6 @@
 
 # Case if OS X
 case `uname` in Darwin*) glibtoolize --copy ;;
-  *) libtoolize --copy ;; esac
+  *) libtoolize --force --copy ;; esac
 
 aclocal && autoheader && automake --add-missing && autoconf

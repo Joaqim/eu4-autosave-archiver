@@ -14,6 +14,7 @@ AC_PROG_CXX
 AC_PROG_CC
 
 AX_CXX_COMPILE_STDCXX(17, [noext], [mandatory])
+#AX_CXX_COMPILE_STDCXX(14, [noext], [mandatory])
 
 if test x$ac_success = xno; then
 	if test x$CXX = xg++; then

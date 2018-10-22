@@ -8,8 +8,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include<iostream>
-
+#include <iostream>
 
 int main() {
 #if 0
@@ -31,13 +30,46 @@ int main() {
   cv::waitKey(0);
 #endif
 
+  auto save = Savefile("Test.tmp");
+  save.date = "1444_11_11";
+  std::cout << save << std::endl;
+  impl::makePath("./"+ save.name); 
+  assert(impl::directoryExist("./"+ save.name)); 
+
+  std::fstream file_in{"text.txt", std::ios::in};
+  Savefile save_in;
+  std::set<Savefile> savefiles;
+  while(!file_in.eof()) {
+    std::string line;
+    std::getline(file_in, line);
+    if(line.size() > 4) {
+      line >> save_in;
+      savefiles.insert(save_in);
+    }
+  }
+  file_in.close();
+
+#if 0
+  std::ofstream file_out;
+  file_out.open("text.txt", std::ios::out | std::ios::trunc);
+  for(auto const save : savefiles) {
+    file_out << save << std::endl;
+  }
+  file_out.close();
+#endif
+
+
+  std::cout << save_in << std::endl;
+  assert(save_in == save);
+
+  return 0;
   SavefileManager savefileManager;
   for(;;) {
     savefileManager.update();
     //impl::delayMS(50);
   }
 
-  return 0;
+return 0;
 }
 
 

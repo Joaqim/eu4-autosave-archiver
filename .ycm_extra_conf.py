@@ -41,7 +41,7 @@ flags = [
     '-I..',
     '-I../include',
     '-isystem -I../third_party/simplefilewatcher/includes',
-    '-I/home/jq/Documents/eu4-autosaver/src',
+    '-I../src',
     '-I/usr/include/glib-2.0',
     '-I/usr/include/leptonica',
     '-I/usr/include/opencv',

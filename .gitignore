@@ -16,6 +16,7 @@ Makefile.in
 /Makefile
 /config.*
 /autom4te.cache
+/autom4te.cache
 /autoscan.log
 /autoscan-*.log
 /aclocal.m4
