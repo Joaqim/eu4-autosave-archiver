@@ -30,6 +30,7 @@ int main() {
   cv::waitKey(0);
 #endif
 
+#if 0
   auto save = Savefile("Test.tmp");
   save.date = "1444_11_11";
   std::cout << save << std::endl;
@@ -63,6 +64,7 @@ int main() {
   assert(save_in == save);
 
   return 0;
+#endif
   SavefileManager savefileManager;
   for(;;) {
     savefileManager.update();

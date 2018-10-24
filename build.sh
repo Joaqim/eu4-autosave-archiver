@@ -15,7 +15,15 @@ fi
 cd src
 
 if [ "$1" == "win" ]; then
-	../configure --prefix=/mingw64
+		#--build=x86_64-w64-mingw32 
+		#CXXCPP="mingw-w64-x86_64-cpp" CPP="mingw-w64-x86_64-cpp" CC="mingw-w64-x86_64-gcc" 
+		../configure  \
+		--build=x86_64-pc-linux-gnu \
+		--host=x86_64-w64-mingw32 \
+		--target=x86_64-w64-mingw32 \
+		--prefix=/usr/local/x86_64-w64-mingw32 \
+		--disable-shared 
+#		--disable-documentation
 else
 #	../configure --prefix=/usr --enable-gl3=yes
 	../configure --prefix=/usr -C

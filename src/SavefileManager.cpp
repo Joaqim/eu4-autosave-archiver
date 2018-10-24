@@ -419,6 +419,18 @@ struct SavefileManager
       }
       ifs.close();
 
+      std::fstream file_in{"text.txt", std::ios::in};
+      Savefile save_in;
+      while(!file_in.eof()) {
+        std::string line;
+        std::getline(file_in, line);
+        if(line.size() > 4) {
+          line >> save_in;
+          savefiles.insert(save_in);
+        }
+      }
+      file_in.close();
+
 
       //    ofs.open("../data/savefile_dirs.txt", std::ios::app);
 

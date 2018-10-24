@@ -13,6 +13,14 @@ m4_include([m4/m4_ax_cxx_compile_stdcxx.m4])
 AC_PROG_CXX
 AC_PROG_CC
 
+#AC_SEARCH_LIBS([dlopen], [dl dld], [], [ AC_MSG_ERROR([unable to find the dlopen() function]) ])
+
+# Check for pthread
+AX_PTHREAD(, [AC_MSG_ERROR([libpthread is required])])
+LIBS="$PTHREAD_LIBS $LIBS"
+CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+CC="$PTHREAD_CC"
+
 AX_CXX_COMPILE_STDCXX(17, [noext], [mandatory])
 #AX_CXX_COMPILE_STDCXX(14, [noext], [mandatory])
 
