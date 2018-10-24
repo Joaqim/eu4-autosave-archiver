@@ -15,12 +15,15 @@
 #include <fstream>
 
 
-
 std::string joinStringVector(const std::vector<std::string> & v, const std::string & delimiter = ",") {
+	//std::vector<std::string>::iterator itr;
   std::string out;
-  if (auto i = v.begin(), e = v.end(); i != e) {
-    out += *i++;
-    for (; i != e; ++i) out.append(delimiter).append(*i);
+  //itr = v.begin(); 
+  auto itr = v.begin(); 
+  auto e = v.end(); 
+  if(itr != e) {
+    out += *itr++;
+    for (; itr != e; ++itr) out.append(delimiter).append(*itr);
   }
   return out;
 }

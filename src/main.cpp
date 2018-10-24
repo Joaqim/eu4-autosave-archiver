@@ -59,18 +59,17 @@ int main() {
   file_out.close();
 #endif
 
-
+#else
   std::cout << save_in << std::endl;
   assert(save_in == save);
 
   return 0;
-#endif
   SavefileManager savefileManager;
   for(;;) {
     savefileManager.update();
     //impl::delayMS(50);
   }
-
+#endif
 return 0;
 }
 
