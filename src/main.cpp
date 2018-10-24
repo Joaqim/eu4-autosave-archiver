@@ -59,9 +59,9 @@ int main() {
   file_out.close();
 #endif
 
-#else
   std::cout << save_in << std::endl;
   assert(save_in == save);
+#else
 
   return 0;
   SavefileManager savefileManager;
