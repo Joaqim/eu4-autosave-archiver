@@ -93,7 +93,7 @@ AC_CHECK_HEADERS([fcntl.h limits.h stdint.h string.h sys/time.h termios.h unistd
 
 #PKG_CHECK_MODULES([DEPS], [glib-2.0 >= 2.24.1] [opencv] [lept] [tesseract] )
 
-PKG_CHECK_MODULES([DEPS], [opencv] [lept] [tesseract] [libssh] [glib-2.0 >= 2.24.1])
+PKG_CHECK_MODULES([DEPS], [opencv4] [lept] [tesseract] [libssh] [glib-2.0 >= 2.24.1])
 
 
 # Find the X11 include and library directories

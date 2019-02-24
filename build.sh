@@ -1,3 +1,5 @@
+#!/bin/bash
+
 mkdir -p build &>/dev/null
 set -x
 cd build

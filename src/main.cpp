@@ -63,7 +63,6 @@ int main() {
   assert(save_in == save);
 #else
 
-  return 0;
   SavefileManager savefileManager;
   for(;;) {
     savefileManager.update();

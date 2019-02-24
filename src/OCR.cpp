@@ -58,7 +58,11 @@ class OCR : public tesseract::TessBaseAPI {
     if(image.cols ==0 || image.rows == 0) return "";
 
     // Convert to grayscale
+#if CV_MAJOR_VERSION == 2
     cv::cvtColor(image, image, CV_BGR2GRAY); 
+#elif CV_MAJOR_VERSION == 3 | 4
+    cv::cvtColor(image, image,cv::COLOR_BGR2GRAY);
+#endif
 
     // Dubble in size
     cv::resize(image, image, cv::Size(image.cols*2, image.rows*2), cv::INTER_NEAREST);

@@ -1,3 +1,4 @@
+#!/bin/bash
 #mkdir -p build; cd build
 
 if [ "$1" == "ycm" ]; then
