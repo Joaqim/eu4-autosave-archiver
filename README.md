@@ -7,5 +7,4 @@ Copies  save files automatically to a subfolder with save file name after each s
 Dependencies: OpenCV tesseract-ocr, leptonica, glib, vtk (libssh)?
 
 Currently only works on Linux.
-Highly unstable; in active development.
-
+Highly unstable; in active development (4/3-2019).
