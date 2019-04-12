@@ -62,14 +62,14 @@ int main() {
   std::cout << save_in << std::endl;
   assert(save_in == save);
 #else
-
   SavefileManager savefileManager;
-  for(;;) {
+//for(;;) {
+ while(true) {
     savefileManager.update();
-    //impl::delayMS(50);
+    impl::delayMS(50);
   }
 #endif
-return 0;
+  return 0;
 }
 
 

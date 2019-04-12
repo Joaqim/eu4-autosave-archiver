@@ -98,6 +98,8 @@ struct Savefile {
     // remove '.tmp'
 
     // count numerals to make sure date is somewhat correct
+
+#if 1
     std::string word; 
     int count{0}; 
     while(std::getline(ss, word, '_')) {
@@ -105,6 +107,9 @@ struct Savefile {
         count++;
       }
     }
+#else
+    int count{6};
+#endif
 
     if(filename.find("autosave") == std::string::npos) {
       if (count >= 2) {
@@ -182,13 +187,16 @@ struct Savefile {
       screen(resolution_.first - 214, 16, 124, 19)
     {
       ocr = new OCR();
+      std::cout << "Created Updatelistener\n";
+      
     }
 
     bool handleFileAction(FW::WatchID watchid, const FW::String& dir, const FW::String& filename,
                         FW::Action action)
   {
-    //std::cout << currentDate << std::endl;
-    //
+
+    //std::cout << "DIR (" << dir + ") FILE (" + filename + ") has event " << action << std::endl;
+
     //if(currentDate.size() <= 6) return false;
 
     //if (filename.find("Backup") != std::string::npos) return false; // Check if filename contains 'Backup'
@@ -199,6 +207,7 @@ struct Savefile {
     // numbers with extract_ints(), I can then replace any superflous '_' with:
     // string.replace('__', '_')
 
+    if(filename.size() <= 4) return false;
     if (filename.substr(filename.size() - 4) != ".tmp") return false; // If file isn't .tmp, return
 #if 0
     std::stringstream ss(filename.substr(0, filename.size()-4)); // remove '.tmp'
@@ -370,20 +379,22 @@ struct SavefileManager
     SavefileManager() : fileWatcher{} {//, updateListener(&fileWatcher,&savefileDirs) {
 #if (PLATFORM == PLATFORM_WIN32)
 #include <Shlobj.h>  // need to include definitions of constants
-      WCHAR path[MAX_PATH];
-      if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path))) {
-        std::string save_path{path + "/Documents/Paradox Interactive/Europa Universalis IV/save games"};
+      WCHAR homedir[MAX_PATH];
+      if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, homedir))) {
+        std::string save_path{homedir + "/Documents/Paradox Interactive/Europa Universalis IV/save games"};
       }
-#endif
-
-#if (PLATFORM == PLATFORM_LINUX)
+#elif (PLATFORM == PLATFORM_LINUX)
       const char *homedir;
 
       if ((homedir = getenv("HOME")) == NULL) {
         homedir = getpwuid(getuid())->pw_dir;
       }
       std::string save_path = std::string(homedir) + "/.local/share/Paradox Interactive/Europa Universalis IV/save games";
+
+#else
+      assert(0);
 #endif
+      std::cout << "Save games path: " << save_path << "\n";
       //FW::WatchID watchid = fileWatcheraddWatch(save_path, new UpdateListener());
 
       //TODO: Find resolution in E U 4/logs aswell (?)
@@ -419,6 +430,7 @@ struct SavefileManager
       }
       ifs.close();
 
+#if 0
       std::fstream file_in{"text.txt", std::ios::in};
       Savefile save_in;
       while(!file_in.eof()) {
@@ -430,14 +442,15 @@ struct SavefileManager
         }
       }
       file_in.close();
+#endif
 
 
       //    ofs.open("../data/savefile_dirs.txt", std::ios::app);
 
-      //fileWatcher.addWatch(save_path, &updateListener);
 
     }
     void update() {
+	    //std::cout << "Update\n";
       fileWatcher.update();
 #if 0
       std::ofstream ofs;
