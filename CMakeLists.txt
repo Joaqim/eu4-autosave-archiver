@@ -1,3 +1,4 @@
+project(eu4-autosave-archiver)
 cmake_minimum_required(VERSION 3.5.1)
 
 
